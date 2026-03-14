@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
-import '../data/sample_data.dart';
+import '../data/sample_data.dart' as data;
 
 class AppState extends ChangeNotifier {
-  List<Prompt> _prompts = prompts;
+  List<Prompt> _prompts = data.prompts;
   Set<String> _favorites = {};
   String _searchQuery = '';
   String _selectedCategory = 'all';
