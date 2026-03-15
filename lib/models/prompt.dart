@@ -102,25 +102,4 @@ class Prompt {
       isCustom: isCustom ?? this.isCustom,
     );
   }
-      outputPreview: outputPreview ?? this.outputPreview,
-    );
-  }
-}
-
-class Category {
-  final String id;
-  final String name;
-  final String description;
-  final String icon;
-  final String color;
-  final String? imageUrl;
-
-  Category({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.icon,
-    required this.color,
-    this.imageUrl,
-  });
 }
