@@ -29,9 +29,8 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Builder(
-        builder: (context) => SafeArea(
-          child: CustomScrollView(
+      body: SafeArea(
+        child: CustomScrollView(
           slivers: [
             // Modern Header
             SliverToBoxAdapter(
