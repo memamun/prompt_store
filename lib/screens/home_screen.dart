@@ -7,6 +7,7 @@ import '../widgets/category_card.dart';
 import 'search_screen.dart';
 import 'prompt_detail_screen.dart';
 import 'category_screen.dart';
+import 'drawer_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,55 +18,57 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      drawer: const AppDrawer(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Modern Header
+            // Modern Header with Menu
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                padding: const EdgeInsets.fromLTRB(8, 16, 20, 8),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Prompt Store',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.foregroundDark
-                                : AppColors.foregroundLight,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Discover AI prompts',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDark
-                                ? AppColors.mutedDark
-                                : AppColors.mutedLight,
-                          ),
-                        ),
-                      ],
+                    IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: Icon(
+                        Icons.menu,
+                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                      ),
                     ),
-                    IconButton.filled(
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Prompt Store',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? AppColors.foregroundDark
+                                  : AppColors.foregroundLight,
+                            ),
+                          ),
+                          Text(
+                            'Discover AI prompts',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: isDark
+                                  ? AppColors.mutedDark
+                                  : AppColors.mutedLight,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
                       onPressed: () => appState.toggleDarkMode(),
                       icon: Icon(
                         appState.isDarkMode
                             ? Icons.light_mode
                             : Icons.dark_mode,
-                      ),
-                      style: IconButton.styleFrom(
-                        backgroundColor: isDark
-                            ? AppColors.surfaceContainerDark
-                            : AppColors.surfaceContainerLight,
-                        foregroundColor: isDark
-                            ? AppColors.foregroundDark
-                            : AppColors.foregroundLight,
+                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
                       ),
                     ),
                   ],
@@ -161,7 +164,7 @@ class HomeScreen extends StatelessWidget {
             // Featured Carousel
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 180,
+                height: 160,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
