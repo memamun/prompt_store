@@ -89,7 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     label: Text(label),
                     selected: isSelected,
                     onSelected: (_) => appState.setSelectedCategory(category),
-                    selectedColor: AppColors.primary.withOpacity(0.2),
+                    selectedColor: AppColors.primary.withValues(alpha: 0.2),
                     checkmarkColor: AppColors.primary,
                     labelStyle: TextStyle(
                       color: isSelected ? AppColors.primary : null,

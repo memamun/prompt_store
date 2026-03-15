@@ -35,23 +35,29 @@ class PromptCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final categoryColor = _getCategoryColor(prompt.category);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hasImage = prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty;
 
     return Card(
+      elevation: 0,
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      color: isDark ? AppColors.surfaceContainerDark : AppColors.surfaceContainerLight,
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image section
-            if (prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty)
+            if (hasImage)
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: CachedNetworkImage(
                   imageUrl: prompt.imageUrl!,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: categoryColor.withOpacity(0.2),
+                    color: categoryColor.withValues(alpha: 0.2),
                     child: Center(
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
@@ -60,12 +66,8 @@ class PromptCard extends StatelessWidget {
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: categoryColor.withOpacity(0.2),
-                    child: Icon(
-                      Icons.image,
-                      size: 40,
-                      color: categoryColor,
-                    ),
+                    color: categoryColor.withValues(alpha: 0.2),
+                    child: Icon(Icons.image, size: 40, color: categoryColor),
                   ),
                 ),
               ),
@@ -74,16 +76,12 @@ class PromptCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Category badge and actions
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: categoryColor.withOpacity(0.1),
+                          color: categoryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -116,39 +114,33 @@ class PromptCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // Title
                   Text(
                     prompt.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  // Description
                   Text(
                     prompt.description,
                     style: TextStyle(
-                      color: isDark
-                          ? AppColors.mutedDark
-                          : AppColors.mutedLight,
+                      color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                       fontSize: 13,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 12),
-                  // Author and usage
                   Row(
                     children: [
                       Icon(
                         Icons.person_outline,
                         size: 14,
-                        color: isDark
-                            ? AppColors.mutedDark
-                            : AppColors.mutedLight,
+                        color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
@@ -156,9 +148,7 @@ class PromptCard extends StatelessWidget {
                           prompt.author ?? 'Unknown',
                           style: TextStyle(
                             fontSize: 12,
-                            color: isDark
-                                ? AppColors.mutedDark
-                                : AppColors.mutedLight,
+                            color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -166,18 +156,14 @@ class PromptCard extends StatelessWidget {
                       Icon(
                         Icons.copy,
                         size: 14,
-                        color: isDark
-                            ? AppColors.mutedDark
-                            : AppColors.mutedLight,
+                        color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '${prompt.usageCount}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark
-                              ? AppColors.mutedDark
-                              : AppColors.mutedLight,
+                          color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                         ),
                       ),
                     ],
@@ -224,110 +210,77 @@ class FeaturedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categoryColor = _getCategoryColor(prompt.category);
+    final hasImage = prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 300,
-        margin: const EdgeInsets.only(right: 16),
+        width: 280,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: categoryColor.withValues(alpha: 0.4),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
+              color: categoryColor.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           child: Stack(
+            fit: StackFit.expand,
             children: [
-              Positioned.fill(
-                child: prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: prompt.imageUrl!,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                categoryColor,
-                                categoryColor.withValues(alpha: 0.7),
-                              ],
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                categoryColor,
-                                categoryColor.withValues(alpha: 0.7),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              categoryColor,
-                              categoryColor.withValues(alpha: 0.7),
-                            ],
-                          ),
-                        ),
-                      ),
-              ),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.85),
-                      ],
-                      stops: const [0.2, 1.0],
-                    ),
+              // Background
+              if (hasImage)
+                CachedNetworkImage(
+                  imageUrl: prompt.imageUrl!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: categoryColor,
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: categoryColor,
+                  ),
+                )
+              else
+                Container(color: categoryColor),
+              
+              // Gradient overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
+                    stops: const [0.3, 1.0],
                   ),
                 ),
               ),
+
+              // Top badge
               Positioned(
-                top: 16,
-                right: 16,
+                top: 12,
+                right: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.3),
-                    ),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.trending_up,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                      const Icon(Icons.trending_up, color: Colors.white, size: 12),
                       const SizedBox(width: 4),
                       Text(
                         '${prompt.usageCount}+',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -335,74 +288,53 @@ class FeaturedCard extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Content
               Positioned(
-                left: 20,
-                right: 20,
-                bottom: 20,
+                left: 16,
+                right: 16,
+                bottom: 16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.25),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         prompt.category.toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
+                          letterSpacing: 1,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     Text(
                       prompt.title,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        height: 1.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.copy,
-                                color: Colors.white,
-                                size: 12,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                'Tap to use',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                        const Icon(Icons.copy, color: Colors.white70, size: 12),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Tap to use',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontSize: 11,
                           ),
                         ),
                       ],

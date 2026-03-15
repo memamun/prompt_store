@@ -55,7 +55,7 @@ class CategoryScreen extends StatelessWidget {
                     end: Alignment.bottomRight,
                     colors: [
                       categoryColor,
-                      categoryColor.withOpacity(0.7),
+                      categoryColor.withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -63,7 +63,7 @@ class CategoryScreen extends StatelessWidget {
                   child: Icon(
                     _getCategoryIcon(categoryId),
                     size: 80,
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                   ),
                 ),
               ),

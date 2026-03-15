@@ -61,7 +61,7 @@ class PromptDetailScreen extends StatelessWidget {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.7),
+                                Colors.black.withValues(alpha: 0.7),
                               ],
                             ),
                           ),
@@ -141,7 +141,7 @@ class PromptDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: categoryColor.withOpacity(0.1),
+                      color: categoryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -251,12 +251,12 @@ class PromptDetailScreen extends StatelessWidget {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           height: 200,
-                          color: categoryColor.withOpacity(0.2),
+                          color: categoryColor.withValues(alpha: 0.2),
                           child: const Center(child: CircularProgressIndicator()),
                         ),
                         errorWidget: (context, url, error) => Container(
                           height: 200,
-                          color: categoryColor.withOpacity(0.2),
+                          color: categoryColor.withValues(alpha: 0.2),
                           child: Icon(Icons.image, size: 50, color: categoryColor),
                         ),
                       ),
@@ -312,7 +312,7 @@ class PromptDetailScreen extends StatelessWidget {
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(

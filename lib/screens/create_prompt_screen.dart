@@ -159,7 +159,7 @@ class _CreatePromptScreenState extends State<CreatePromptScreen> {
                       _selectedCategory = category['id'];
                     });
                   },
-                  selectedColor: AppColors.primary.withOpacity(0.2),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
                 );
               }).toList(),
             ),
@@ -202,7 +202,7 @@ class _CreatePromptScreenState extends State<CreatePromptScreen> {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     height: 150,
-                    color: AppColors.error.withOpacity(0.1),
+                    color: AppColors.error.withValues(alpha: 0.1),
                     child: const Center(
                       child: Text('Invalid image URL'),
                     ),
