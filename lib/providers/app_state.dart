@@ -87,7 +87,9 @@ class AppState extends ChangeNotifier {
   }
 
   List<Prompt> get featuredPrompts {
-    return _prompts.take(5).toList();
+    final sorted = List<Prompt>.from(_prompts);
+    sorted.sort((a, b) => b.usageCount.compareTo(a.usageCount));
+    return sorted.take(5).toList();
   }
 
   List<Prompt> get userPrompts {

@@ -36,6 +36,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
+    final appState = context.read<AppState>();
+    appState.setSearchQuery('');
+    appState.setSelectedCategory('all');
+    appState.setSearchFilter('all');
     _searchController.dispose();
     _focusNode.dispose();
     super.dispose();
