@@ -18,7 +18,12 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      drawer: const AppDrawer(currentIndex: 0),
+      drawer: AppDrawer(
+        currentIndex: 0,
+        onItemSelected: (index) {
+          Navigator.pop(context);
+        },
+      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
