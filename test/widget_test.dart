@@ -43,18 +43,37 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const FavoritesScreen(),
-    const SettingsScreen(),
-  ];
+  void _onItemSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  Widget _buildScreen(int index) {
+    switch (index) {
+      case 0:
+        return HomeScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+        );
+      case 1:
+        return const FavoritesScreen();
+      case 2:
+        return const SettingsScreen();
+      default:
+        return HomeScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: List.generate(3, (index) => _buildScreen(index)),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,

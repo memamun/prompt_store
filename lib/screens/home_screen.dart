@@ -9,9 +9,23 @@ import 'search_screen.dart';
 import 'prompt_detail_screen.dart';
 import 'category_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  final int currentIndex;
+  final Function(int) onNavigate;
+  final VoidCallback openDrawer;
 
+  const HomeScreen({
+    super.key,
+    required this.currentIndex,
+    required this.onNavigate,
+    required this.openDrawer,
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   Color _getCategoryColor(String categoryId) {
     try {
       final category = CategoryData.defaultCategories.firstWhere(
@@ -40,10 +54,12 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Builder(
                       builder: (context) => IconButton(
-                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        onPressed: widget.openDrawer,
                         icon: Icon(
                           Icons.menu,
-                          color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                          color: isDark
+                              ? AppColors.foregroundDark
+                              : AppColors.foregroundLight,
                         ),
                       ),
                     ),
@@ -80,7 +96,9 @@ class HomeScreen extends StatelessWidget {
                         appState.isDarkMode
                             ? Icons.light_mode
                             : Icons.dark_mode,
-                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                        color: isDark
+                            ? AppColors.foregroundDark
+                            : AppColors.foregroundLight,
                       ),
                     ),
                   ],
@@ -213,9 +231,9 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
                 child: Text(
                   'Categories',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -230,26 +248,23 @@ class HomeScreen extends StatelessWidget {
                   crossAxisSpacing: 12,
                   childAspectRatio: 1.3,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final category = appState.categories[index];
-                    return CategoryCard(
-                      category: category,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CategoryScreen(
-                              categoryId: category.id,
-                              categoryName: category.name,
-                            ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final category = appState.categories[index];
+                  return CategoryCard(
+                    category: category,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CategoryScreen(
+                            categoryId: category.id,
+                            categoryName: category.name,
                           ),
-                        );
-                      },
-                    );
-                  },
-                  childCount: appState.categories.length,
-                ),
+                        ),
+                      );
+                    },
+                  );
+                }, childCount: appState.categories.length),
               ),
             ),
 
@@ -259,9 +274,9 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
                 child: Text(
                   'Recent Prompts',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -270,49 +285,43 @@ class HomeScreen extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final prompt = appState.prompts[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: PromptCard(
-                        prompt: prompt,
-                        isFavorite: appState.isFavorite(prompt.id),
-                        categoryColor: _getCategoryColor(prompt.category),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  PromptDetailScreen(prompt: prompt),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final prompt = appState.prompts[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: PromptCard(
+                      prompt: prompt,
+                      isFavorite: appState.isFavorite(prompt.id),
+                      categoryColor: _getCategoryColor(prompt.category),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PromptDetailScreen(prompt: prompt),
+                          ),
+                        );
+                      },
+                      onFavoriteTap: () {
+                        appState.toggleFavorite(prompt.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              appState.isFavorite(prompt.id)
+                                  ? 'Added to favorites'
+                                  : 'Removed from favorites',
                             ),
-                          );
-                        },
-                        onFavoriteTap: () {
-                          appState.toggleFavorite(prompt.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                appState.isFavorite(prompt.id)
-                                    ? 'Added to favorites'
-                                    : 'Removed from favorites',
-                              ),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  childCount: appState.prompts.length.clamp(0, 5),
-                ),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }, childCount: appState.prompts.length.clamp(0, 5)),
               ),
             ),
 
             // Bottom padding for FAB
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 100),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),
       ),

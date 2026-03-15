@@ -6,9 +6,23 @@ import '../models/category.dart';
 import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
 
-class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({super.key});
+class FavoritesScreen extends StatefulWidget {
+  final int currentIndex;
+  final Function(int) onNavigate;
+  final VoidCallback openDrawer;
 
+  const FavoritesScreen({
+    super.key,
+    required this.currentIndex,
+    required this.onNavigate,
+    required this.openDrawer,
+  });
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
   Color _getCategoryColor(String categoryId) {
     try {
       final category = CategoryData.defaultCategories.firstWhere(
@@ -29,6 +43,12 @@ class FavoritesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Favorites'),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: widget.openDrawer,
+          ),
+        ),
       ),
       body: appState.favoritePrompts.isEmpty
           ? _buildEmptyState(isDark)
@@ -83,7 +103,9 @@ class FavoritesScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+              color: isDark
+                  ? AppColors.foregroundDark
+                  : AppColors.foregroundLight,
             ),
           ),
           const SizedBox(height: 8),

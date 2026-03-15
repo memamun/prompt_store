@@ -7,9 +7,23 @@ import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
 import 'create_prompt_screen.dart';
 
-class MyPromptsScreen extends StatelessWidget {
-  const MyPromptsScreen({super.key});
+class MyPromptsScreen extends StatefulWidget {
+  final int currentIndex;
+  final Function(int) onNavigate;
+  final VoidCallback openDrawer;
 
+  const MyPromptsScreen({
+    super.key,
+    required this.currentIndex,
+    required this.onNavigate,
+    required this.openDrawer,
+  });
+
+  @override
+  State<MyPromptsScreen> createState() => _MyPromptsScreenState();
+}
+
+class _MyPromptsScreenState extends State<MyPromptsScreen> {
   Color _getCategoryColor(String categoryId) {
     try {
       final category = CategoryData.defaultCategories.firstWhere(
@@ -26,12 +40,20 @@ class MyPromptsScreen extends StatelessWidget {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final userPrompts = appState.prompts.where((p) => p.author == 'You' || p.isCustom == true).toList();
+    final userPrompts = appState.prompts
+        .where((p) => p.author == 'You' || p.isCustom == true)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Prompts'),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: widget.openDrawer,
+          ),
+        ),
       ),
       body: userPrompts.isEmpty
           ? Center(
@@ -49,14 +71,18 @@ class MyPromptsScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                      color: isDark
+                          ? AppColors.foregroundDark
+                          : AppColors.foregroundLight,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Create your first prompt!',
                     style: TextStyle(
-                      color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                      color: isDark
+                          ? AppColors.mutedDark
+                          : AppColors.mutedLight,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -64,7 +90,9 @@ class MyPromptsScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const CreatePromptScreen(),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.add),

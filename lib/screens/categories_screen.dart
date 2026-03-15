@@ -6,20 +6,42 @@ import '../widgets/category_card.dart';
 import 'category_screen.dart';
 import 'create_category_screen.dart';
 
-class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+class CategoriesScreen extends StatefulWidget {
+  final int currentIndex;
+  final Function(int) onNavigate;
+  final VoidCallback openDrawer;
 
+  const CategoriesScreen({
+    super.key,
+    required this.currentIndex,
+    required this.onNavigate,
+    required this.openDrawer,
+  });
+
+  @override
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final customCategories = appState.categories.where((c) => c.isCustom).toList();
+    final customCategories = appState.categories
+        .where((c) => c.isCustom)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: widget.openDrawer,
+          ),
+        ),
       ),
       body: customCategories.isEmpty
           ? _buildEmptyState(context, isDark)
@@ -34,7 +56,9 @@ class CategoriesScreen extends StatelessWidget {
               itemCount: customCategories.length,
               itemBuilder: (context, index) {
                 final category = customCategories[index];
-                final promptCount = appState.getPromptsByCategory(category.id).length;
+                final promptCount = appState
+                    .getPromptsByCategory(category.id)
+                    .length;
 
                 return CategoryGridItem(
                   category: category,
@@ -57,9 +81,7 @@ class CategoriesScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const CreateCategoryScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const CreateCategoryScreen()),
           );
         },
         child: const Icon(Icons.add),
@@ -83,7 +105,9 @@ class CategoriesScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+              color: isDark
+                  ? AppColors.foregroundDark
+                  : AppColors.foregroundLight,
             ),
           ),
           const SizedBox(height: 8),

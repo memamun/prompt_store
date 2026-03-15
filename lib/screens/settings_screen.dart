@@ -5,20 +5,43 @@ import '../theme/app_colors.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  final int currentIndex;
+  final Function(int) onNavigate;
+  final VoidCallback openDrawer;
 
+  const SettingsScreen({
+    super.key,
+    required this.currentIndex,
+    required this.onNavigate,
+    required this.openDrawer,
+  });
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final totalUses = appState.prompts.fold<int>(0, (sum, p) => sum + p.usageCount);
+    final totalUses = appState.prompts.fold<int>(
+      0,
+      (sum, p) => sum + p.usageCount,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: widget.openDrawer,
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -54,14 +77,18 @@ class SettingsScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                      color: isDark
+                          ? AppColors.foregroundDark
+                          : AppColors.foregroundLight,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Version 1.0.0',
                     style: TextStyle(
-                      color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                      color: isDark
+                          ? AppColors.mutedDark
+                          : AppColors.mutedLight,
                     ),
                   ),
                 ],
@@ -106,7 +133,9 @@ class SettingsScreen extends StatelessWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Reset Onboarding'),
-                    content: const Text('This will show the onboarding screens next time you restart the app.'),
+                    content: const Text(
+                      'This will show the onboarding screens next time you restart the app.',
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -117,7 +146,11 @@ class SettingsScreen extends StatelessWidget {
                           appState.setOnboardingComplete(false);
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Onboarding will show on next app restart')),
+                            const SnackBar(
+                              content: Text(
+                                'Onboarding will show on next app restart',
+                              ),
+                            ),
                           );
                         },
                         child: const Text('Reset'),
@@ -175,7 +208,10 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.info_outline, color: AppColors.primary),
+                  leading: const Icon(
+                    Icons.info_outline,
+                    color: AppColors.primary,
+                  ),
                   title: const Text('About'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
@@ -215,25 +251,35 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: const Icon(Icons.privacy_tip_outlined, color: AppColors.primary),
+                  leading: const Icon(
+                    Icons.privacy_tip_outlined,
+                    color: AppColors.primary,
+                  ),
                   title: const Text('Privacy Policy'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const PrivacyPolicyScreen(),
+                      ),
                     );
                   },
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: const Icon(Icons.description_outlined, color: AppColors.primary),
+                  leading: const Icon(
+                    Icons.description_outlined,
+                    color: AppColors.primary,
+                  ),
                   title: const Text('Terms of Service'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const TermsOfServiceScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const TermsOfServiceScreen(),
+                      ),
                     );
                   },
                 ),
@@ -265,10 +311,7 @@ class SettingsScreen extends StatelessWidget {
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
-                          Icons.code,
-                          color: AppColors.primary,
-                        ),
+                        child: const Icon(Icons.code, color: AppColors.primary),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -279,7 +322,9 @@ class SettingsScreen extends StatelessWidget {
                               'Prompt Store Team',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                                color: isDark
+                                    ? AppColors.foregroundDark
+                                    : AppColors.foregroundLight,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -287,7 +332,9 @@ class SettingsScreen extends StatelessWidget {
                               'Making AI prompts accessible to everyone',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                                color: isDark
+                                    ? AppColors.mutedDark
+                                    : AppColors.mutedLight,
                               ),
                             ),
                           ],
@@ -325,10 +372,7 @@ class _StatItem extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Text(
           label,

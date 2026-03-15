@@ -35,9 +35,7 @@ class MyApp extends StatelessWidget {
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               home: const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                body: Center(child: CircularProgressIndicator()),
               ),
             );
           }
@@ -77,19 +75,52 @@ class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const CategoriesScreen(),
-    const MyPromptsScreen(),
-    const FavoritesScreen(),
-    const SettingsScreen(),
-  ];
+  Widget _buildScreen(int index) {
+    switch (index) {
+      case 0:
+        return HomeScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+      case 1:
+        return CategoriesScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+      case 2:
+        return MyPromptsScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+      case 3:
+        return FavoritesScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+      case 4:
+        return SettingsScreen(
+          currentIndex: _currentIndex,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+      default:
+        return HomeScreen(
+          currentIndex: 0,
+          onNavigate: _onItemSelected,
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        );
+    }
+  }
 
   void _onItemSelected(int index) {
     setState(() {
       _currentIndex = index;
     });
-    Navigator.pop(context); // Close drawer
+    Navigator.pop(context);
   }
 
   @override
@@ -102,7 +133,7 @@ class _MainNavigationState extends State<MainNavigation> {
       ),
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: List.generate(5, (index) => _buildScreen(index)),
       ),
       floatingActionButton: _currentIndex == 4
           ? null
