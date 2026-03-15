@@ -231,38 +231,62 @@ class FeaturedCard extends StatelessWidget {
         width: 300,
         margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: categoryColor.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              color: categoryColor.withValues(alpha: 0.4),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           child: Stack(
             children: [
-              // Background image
-              if (prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty)
-                Positioned.fill(
-                  child: CachedNetworkImage(
-                    imageUrl: prompt.imageUrl!,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: categoryColor,
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: categoryColor,
-                    ),
-                  ),
-                )
-              else
-                Positioned.fill(
-                  child: Container(color: categoryColor),
-                ),
-              // Gradient overlay
+              Positioned.fill(
+                child: prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: prompt.imageUrl!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                categoryColor,
+                                categoryColor.withValues(alpha: 0.7),
+                              ],
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                categoryColor,
+                                categoryColor.withValues(alpha: 0.7),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              categoryColor,
+                              categoryColor.withValues(alpha: 0.7),
+                            ],
+                          ),
+                        ),
+                      ),
+              ),
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -271,29 +295,61 @@ class FeaturedCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.85),
                       ],
-                      stops: const [0.3, 1.0],
+                      stops: const [0.2, 1.0],
                     ),
                   ),
                 ),
               ),
-              // Content
               Positioned(
-                left: 16,
+                top: 16,
                 right: 16,
-                bottom: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.trending_up,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${prompt.usageCount}+',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 20,
+                right: 20,
+                bottom: 20,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 12,
+                        vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         prompt.category.toUpperCase(),
@@ -301,16 +357,18 @@ class FeaturedCard extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Text(
                       prompt.title,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        height: 1.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -318,17 +376,33 @@ class FeaturedCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(
-                          Icons.copy,
-                          color: Colors.white.withOpacity(0.8),
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Tap to copy',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.8),
-                            fontSize: 12,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.copy,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                'Tap to use',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

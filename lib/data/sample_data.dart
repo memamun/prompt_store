@@ -75,6 +75,7 @@ Body:
     createdAt: DateTime(2024, 1, 15),
     usageCount: 1250,
     tags: ['email', 'business', 'professional'],
+    imageUrl: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800',
   ),
   Prompt(
     id: '2',
@@ -94,6 +95,7 @@ Use high quality, 8k resolution, detailed features.''',
     createdAt: DateTime(2024, 1, 20),
     usageCount: 980,
     tags: ['portrait', 'midjourney', 'AI art'],
+    imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800',
   ),
   Prompt(
     id: '3',
@@ -117,6 +119,7 @@ Target audience: [YOUR AUDIENCE]''',
     createdAt: DateTime(2024, 2, 1),
     usageCount: 756,
     tags: ['youtube', 'script', 'video'],
+    imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800',
   ),
   Prompt(
     id: '4',
@@ -141,6 +144,7 @@ Include SEO-optimized content with naturally integrated keywords.''',
     createdAt: DateTime(2024, 2, 10),
     usageCount: 654,
     tags: ['blog', 'SEO', 'writing'],
+    imageUrl: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800',
   ),
   Prompt(
     id: '5',
@@ -163,6 +167,7 @@ Provide a detailed analysis with specific suggestions for improvement.''',
     createdAt: DateTime(2024, 2, 15),
     usageCount: 432,
     tags: ['code review', 'programming', 'development'],
+    imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
   ),
   Prompt(
     id: '6',
@@ -185,6 +190,7 @@ Include:
     createdAt: DateTime(2024, 2, 20),
     usageCount: 521,
     tags: ['quiz', 'education', 'learning'],
+    imageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800',
   ),
   Prompt(
     id: '7',
@@ -207,6 +213,7 @@ Include:
     createdAt: DateTime(2024, 3, 1),
     usageCount: 887,
     tags: ['landscape', 'stable diffusion', 'art'],
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
   ),
   Prompt(
     id: '8',
@@ -227,6 +234,7 @@ Provide:
     createdAt: DateTime(2024, 3, 5),
     usageCount: 445,
     tags: ['meeting', 'summary', 'productivity'],
+    imageUrl: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800',
   ),
   Prompt(
     id: '9',
@@ -248,6 +256,7 @@ Include:
     createdAt: DateTime(2024, 3, 10),
     usageCount: 678,
     tags: ['social media', 'caption', 'marketing'],
+    imageUrl: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800',
   ),
   Prompt(
     id: '10',
@@ -270,5 +279,6 @@ Include:
     createdAt: DateTime(2024, 3, 15),
     usageCount: 334,
     tags: ['tutorial', 'video', 'education'],
+    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
   ),
 ];

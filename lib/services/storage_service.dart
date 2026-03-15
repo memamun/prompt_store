@@ -9,6 +9,7 @@ class StorageService {
   static const String _favoritesKey = 'favorites';
   static const String _isDarkModeKey = 'isDarkMode';
   static const String _categoriesKey = 'categories';
+  static const String _onboardingCompleteKey = 'onboardingComplete';
 
   final SharedPreferences _prefs;
 
@@ -121,6 +122,15 @@ class StorageService {
       debugPrint('Error saving categories: $e');
       return false;
     }
+  }
+
+  // Onboarding
+  bool getOnboardingComplete() {
+    return _prefs.getBool(_onboardingCompleteKey) ?? false;
+  }
+
+  Future<bool> setOnboardingComplete(bool value) async {
+    return await _prefs.setBool(_onboardingCompleteKey, value);
   }
 
   // Clear all data

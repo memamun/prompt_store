@@ -14,6 +14,7 @@ class AppState extends ChangeNotifier {
   String _searchFilter = 'all'; // all, my, favorites
   bool _isDarkMode = false;
   bool _isLoading = true;
+  bool _isOnboardingComplete = false;
 
   AppState(this._storageService) {
     _loadData();
@@ -28,11 +29,19 @@ class AppState extends ChangeNotifier {
   String get searchFilter => _searchFilter;
   bool get isDarkMode => _isDarkMode;
   bool get isLoading => _isLoading;
+  bool get isOnboardingComplete => _isOnboardingComplete;
+
+  void setOnboardingComplete(bool value) {
+    _isOnboardingComplete = value;
+    _storageService.setOnboardingComplete(value);
+    notifyListeners();
+  }
 
   // Initialize with sample data
   void _loadData() {
     _isDarkMode = _storageService.getIsDarkMode();
     _favorites = _storageService.getFavorites();
+    _isOnboardingComplete = _storageService.getOnboardingComplete();
     
     // Load categories
     final storedCategories = _storageService.getCategories();

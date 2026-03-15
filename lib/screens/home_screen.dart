@@ -34,41 +34,15 @@ class HomeScreen extends StatelessWidget {
               onPressed: () => Scaffold.of(context).openDrawer(),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.primary, AppColors.primaryDark],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'PS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Prompt Store',
-                    style: TextStyle(
-                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
+              title: Text(
+                'Prompt Store',
+                style: TextStyle(
+                  color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
-              titlePadding: const EdgeInsets.only(left: 0, bottom: 16),
+              titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
               centerTitle: false,
             ),
             actions: [

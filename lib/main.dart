@@ -10,6 +10,7 @@ import 'screens/favorites_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/create_prompt_screen.dart';
 import 'screens/drawer_menu.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,16 @@ class MyApp extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
+            );
+          }
+
+          if (!appState.isOnboardingComplete) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              home: const OnboardingScreen(),
             );
           }
 
@@ -93,15 +104,14 @@ class _MainNavigationState extends State<MainNavigation> {
         index: _currentIndex,
         children: _screens,
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
           );
         },
-        icon: const Icon(Icons.add),
-        label: const Text('Add Prompt'),
+        child: const Icon(Icons.add),
       ),
     );
   }
