@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/prompt.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
 import '../widgets/prompt_card.dart';

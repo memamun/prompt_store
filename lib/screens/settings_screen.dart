@@ -100,7 +100,7 @@ class SettingsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _StatItem(
-                        icon: Icons.prompt,
+                        icon: Icons.description,
                         label: 'Prompts',
                         value: '${appState.prompts.length}',
                       ),
