@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prompt.dart';
 
@@ -31,30 +32,50 @@ class StorageService {
   }
 
   Future<bool> savePrompts(List<Prompt> prompts) async {
-    final String promptsJson = jsonEncode(prompts.map((e) => e.toJson()).toList());
-    return await _prefs.setString(_promptsKey, promptsJson);
+    try {
+      final String promptsJson = jsonEncode(prompts.map((e) => e.toJson()).toList());
+      return await _prefs.setString(_promptsKey, promptsJson);
+    } catch (e) {
+      debugPrint('Error saving prompts: $e');
+      return false;
+    }
   }
 
   Future<bool> addPrompt(Prompt prompt) async {
-    final prompts = getPrompts();
-    prompts.add(prompt);
-    return await savePrompts(prompts);
+    try {
+      final prompts = getPrompts();
+      prompts.add(prompt);
+      return await savePrompts(prompts);
+    } catch (e) {
+      debugPrint('Error adding prompt: $e');
+      return false;
+    }
   }
 
   Future<bool> updatePrompt(Prompt prompt) async {
-    final prompts = getPrompts();
-    final index = prompts.indexWhere((p) => p.id == prompt.id);
-    if (index != -1) {
-      prompts[index] = prompt;
-      return await savePrompts(prompts);
+    try {
+      final prompts = getPrompts();
+      final index = prompts.indexWhere((p) => p.id == prompt.id);
+      if (index != -1) {
+        prompts[index] = prompt;
+        return await savePrompts(prompts);
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error updating prompt: $e');
+      return false;
     }
-    return false;
   }
 
   Future<bool> deletePrompt(String id) async {
-    final prompts = getPrompts();
-    prompts.removeWhere((p) => p.id == id);
-    return await savePrompts(prompts);
+    try {
+      final prompts = getPrompts();
+      prompts.removeWhere((p) => p.id == id);
+      return await savePrompts(prompts);
+    } catch (e) {
+      debugPrint('Error deleting prompt: $e');
+      return false;
+    }
   }
 
   // Favorites

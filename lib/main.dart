@@ -70,6 +70,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    final favoritesCount = appState.favorites.length;
+
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
@@ -82,33 +85,43 @@ class _MainNavigationState extends State<MainNavigation> {
             _currentIndex = index;
           });
         },
-        destinations: const [
-          NavigationDestination(
+        destinations: [
+          const NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.favorite_outline),
-            selectedIcon: Icon(Icons.favorite),
+            icon: Badge(
+              isLabelVisible: favoritesCount > 0,
+              label: Text('$favoritesCount'),
+              child: const Icon(Icons.favorite_outline),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: favoritesCount > 0,
+              label: Text('$favoritesCount'),
+              child: const Icon(Icons.favorite),
+            ),
             label: 'Favorites',
           ),
-          NavigationDestination(
+          const NavigationDestination(
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings),
             label: 'Settings',
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Prompt'),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:share_plus/share_plus.dart';
 import '../models/prompt.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
@@ -348,12 +349,8 @@ class PromptDetailScreen extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Share feature coming soon!'),
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
+                    final shareText = '${prompt.title}\n\n${prompt.description}\n\n---\n\n${prompt.content}\n\n---\n\nShared from Prompt Store App';
+                    Share.share(shareText, subject: prompt.title);
                   },
                   icon: const Icon(Icons.share),
                   label: const Text('Share'),
