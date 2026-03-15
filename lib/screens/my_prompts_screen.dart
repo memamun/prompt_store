@@ -2,12 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
+import '../models/category.dart';
 import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
 import 'create_prompt_screen.dart';
 
 class MyPromptsScreen extends StatelessWidget {
   const MyPromptsScreen({super.key});
+
+  Color _getCategoryColor(String categoryId) {
+    try {
+      final category = CategoryData.defaultCategories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +83,7 @@ class MyPromptsScreen extends StatelessWidget {
                   child: PromptCard(
                     prompt: prompt,
                     isFavorite: appState.isFavorite(prompt.id),
+                    categoryColor: _getCategoryColor(prompt.category),
                     onTap: () {
                       Navigator.push(
                         context,

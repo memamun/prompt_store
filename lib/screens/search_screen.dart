@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
+import '../models/category.dart';
 import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
 
@@ -15,6 +16,17 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
   final _focusNode = FocusNode();
+
+  Color _getCategoryColor(String categoryId) {
+    try {
+      final category = CategoryData.defaultCategories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
+    }
+  }
 
   @override
   void initState() {
@@ -118,6 +130,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: PromptCard(
                           prompt: prompt,
                           isFavorite: appState.isFavorite(prompt.id),
+                          categoryColor: _getCategoryColor(prompt.category),
                           onTap: () {
                             Navigator.push(
                               context,

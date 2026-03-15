@@ -122,6 +122,7 @@ class CategoryScreen extends StatelessWidget {
                       child: PromptCard(
                         prompt: prompt,
                         isFavorite: appState.isFavorite(prompt.id),
+                        categoryColor: categoryColor,
                         onTap: () {
                           Navigator.push(
                             context,

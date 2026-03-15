@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
+import '../models/category.dart';
 import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
+
+  Color _getCategoryColor(String categoryId) {
+    try {
+      final category = CategoryData.defaultCategories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +42,7 @@ class FavoritesScreen extends StatelessWidget {
                   child: PromptCard(
                     prompt: prompt,
                     isFavorite: true,
+                    categoryColor: _getCategoryColor(prompt.category),
                     onTap: () {
                       Navigator.push(
                         context,

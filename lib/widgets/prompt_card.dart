@@ -10,6 +10,7 @@ class PromptCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onFavoriteTap;
   final VoidCallback? onDeleteTap;
+  final Color? categoryColor;
 
   const PromptCard({
     super.key,
@@ -18,6 +19,7 @@ class PromptCard extends StatelessWidget {
     required this.onTap,
     required this.onFavoriteTap,
     this.onDeleteTap,
+    this.categoryColor,
   });
 
   Color _getCategoryColor(String categoryId) {
@@ -33,7 +35,7 @@ class PromptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryColor = _getCategoryColor(prompt.category);
+    final categoryColor = this.categoryColor ?? _getCategoryColor(prompt.category);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasImage = prompt.imageUrl != null && prompt.imageUrl!.isNotEmpty;
 

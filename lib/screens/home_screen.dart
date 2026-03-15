@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
+import '../models/category.dart';
 import '../widgets/prompt_card.dart';
 import '../widgets/category_card.dart';
 import 'search_screen.dart';
 import 'prompt_detail_screen.dart';
 import 'category_screen.dart';
-import 'drawer_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  Color _getCategoryColor(String categoryId) {
+    try {
+      final category = CategoryData.defaultCategories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,29 +29,15 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      drawer: AppDrawer(
-        currentIndex: 0,
-        onItemSelected: (index) {
-          Navigator.pop(context);
-        },
-      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Modern Header with Menu
+            // Modern Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 16, 20, 8),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () => Scaffold.of(context).openDrawer(),
-                      icon: Icon(
-                        Icons.menu,
-                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,6 +268,7 @@ class HomeScreen extends StatelessWidget {
                       child: PromptCard(
                         prompt: prompt,
                         isFavorite: appState.isFavorite(prompt.id),
+                        categoryColor: _getCategoryColor(prompt.category),
                         onTap: () {
                           Navigator.push(
                             context,
