@@ -14,18 +14,12 @@ class MyPromptsScreen extends StatelessWidget {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Filter only user-created prompts (not from sample data)
     final userPrompts = appState.prompts.where((p) => p.author == 'You' || p.isCustom == true).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Prompts'),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
+        centerTitle: true,
       ),
       body: userPrompts.isEmpty
           ? Center(
@@ -33,7 +27,7 @@ class MyPromptsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.person_outline,
+                    Icons.edit_note,
                     size: 80,
                     color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
                   ),
@@ -102,16 +96,6 @@ class MyPromptsScreen extends StatelessWidget {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Add Prompt'),
-      ),
     );
   }
 }

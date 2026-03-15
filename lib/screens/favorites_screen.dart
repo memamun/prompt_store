@@ -4,7 +4,6 @@ import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
 import '../widgets/prompt_card.dart';
 import 'prompt_detail_screen.dart';
-import 'create_prompt_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -42,9 +41,9 @@ class FavoritesScreen extends StatelessWidget {
                     onFavoriteTap: () {
                       appState.toggleFavorite(prompt.id);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Removed from favorites'),
-                          duration: const Duration(seconds: 1),
+                        const SnackBar(
+                          content: Text('Removed from favorites'),
+                          duration: Duration(seconds: 1),
                         ),
                       );
                     },
@@ -52,15 +51,6 @@ class FavoritesScreen extends StatelessWidget {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
-          );
-        },
-        child: const Icon(Icons.add, size: 32),
-      ),
     );
   }
 

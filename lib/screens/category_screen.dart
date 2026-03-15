@@ -28,6 +28,25 @@ class CategoryScreen extends StatelessWidget {
     }
   }
 
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case 'tasks':
+        return Icons.task_alt;
+      case 'images':
+        return Icons.image;
+      case 'videos':
+        return Icons.videocam;
+      case 'writing':
+        return Icons.edit;
+      case 'coding':
+        return Icons.code;
+      case 'education':
+        return Icons.school;
+      default:
+        return Icons.category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
@@ -133,7 +152,7 @@ class CategoryScreen extends StatelessWidget {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -141,27 +160,8 @@ class CategoryScreen extends StatelessWidget {
           );
         },
         backgroundColor: categoryColor,
-        child: const Icon(Icons.add, size: 32),
+        child: const Icon(Icons.add),
       ),
     );
-  }
-
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'tasks':
-        return Icons.task_alt;
-      case 'images':
-        return Icons.image;
-      case 'videos':
-        return Icons.videocam;
-      case 'writing':
-        return Icons.edit;
-      case 'coding':
-        return Icons.code;
-      case 'education':
-        return Icons.school;
-      default:
-        return Icons.category;
-    }
   }
 }

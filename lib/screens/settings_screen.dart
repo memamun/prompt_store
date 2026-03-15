@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_of_service_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -10,6 +12,8 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final totalUses = appState.prompts.fold<int>(0, (sum, p) => sum + p.usageCount);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,26 +33,28 @@ class SettingsScreen extends StatelessWidget {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      gradient: LinearGradient(
+                        colors: [AppColors.primary, AppColors.primaryDark],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Center(
-                      child: Text(
-                        'PS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28,
-                        ),
+                      child: Icon(
+                        Icons.auto_awesome,
+                        color: Colors.white,
+                        size: 40,
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Prompt Store',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -88,6 +94,42 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
+          // Reset Onboarding
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.replay, color: AppColors.primary),
+              title: const Text('Reset Onboarding'),
+              subtitle: const Text('Show welcome screens again'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Reset Onboarding'),
+                    content: const Text('This will show the onboarding screens next time you restart the app.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          appState.setOnboardingComplete(false);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Onboarding will show on next app restart')),
+                          );
+                        },
+                        child: const Text('Reset'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
+
           // Stats
           Card(
             child: Padding(
@@ -118,7 +160,7 @@ class SettingsScreen extends StatelessWidget {
                       _StatItem(
                         icon: Icons.copy,
                         label: 'Total Uses',
-                        value: '${appState.prompts.fold<int>(0, (sum, p) => sum + p.usageCount)}',
+                        value: '$totalUses',
                       ),
                     ],
                   ),
@@ -145,16 +187,16 @@ class SettingsScreen extends StatelessWidget {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          gradient: LinearGradient(
+                            colors: [AppColors.primary, AppColors.primaryDark],
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Center(
-                          child: Text(
-                            'PS',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Icon(
+                            Icons.auto_awesome,
+                            color: Colors.white,
+                            size: 28,
                           ),
                         ),
                       ),
@@ -164,7 +206,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          '© 2024 Prompt Store',
+                          '© 2026 Prompt Store',
                           style: TextStyle(fontSize: 12),
                         ),
                       ],
@@ -177,10 +219,9 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text('Privacy Policy'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Privacy policy coming soon!'),
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
                     );
                   },
                 ),
@@ -190,10 +231,9 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text('Terms of Service'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Terms of service coming soon!'),
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TermsOfServiceScreen()),
                     );
                   },
                 ),
@@ -202,19 +242,61 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // Developer
+          // Developer Info
           Card(
-            child: ListTile(
-              leading: const Icon(Icons.code, color: AppColors.primary),
-              title: const Text('Developer'),
-              subtitle: const Text('Prompt Store Team'),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Thank you for using Prompt Store!'),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Developer',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                );
-              },
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.code,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Prompt Store Team',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Making AI prompts accessible to everyone',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 100),
