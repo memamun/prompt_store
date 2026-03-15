@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
 import '../widgets/prompt_card.dart';
+import '../widgets/category_card.dart';
 import 'search_screen.dart';
 import 'prompt_detail_screen.dart';
 import 'category_screen.dart';
@@ -15,11 +16,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    // Find navigation state from parent
-    final scaffoldState = context.findAncestorStateOfType<State>();
-    final mainNavState = context.findAncestorStateOfType<dynamic>();
-    final hasDrawer = Scaffold.maybeOf(context)?.hasDrawer ?? false;
 
     return Scaffold(
       body: CustomScrollView(

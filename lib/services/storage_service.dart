@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prompt.dart';
-import '../models/category.dart';
+import '../models/category.dart' as cat_model;
 
 class StorageService {
   static const String _promptsKey = 'prompts';
@@ -100,20 +100,20 @@ class StorageService {
   }
 
   // Categories
-  List<Category> getCategories() {
+  List<cat_model.Category> getCategories() {
     final String? categoriesJson = _prefs.getString(_categoriesKey);
     if (categoriesJson == null || categoriesJson.isEmpty) {
       return [];
     }
     try {
       final List<dynamic> categoriesList = jsonDecode(categoriesJson);
-      return categoriesList.map((e) => Category.fromJson(e)).toList();
+      return categoriesList.map((e) => cat_model.Category.fromJson(e)).toList();
     } catch (e) {
       return [];
     }
   }
 
-  Future<bool> saveCategories(List<Category> categories) async {
+  Future<bool> saveCategories(List<cat_model.Category> categories) async {
     try {
       final String categoriesJson = jsonEncode(categories.map((e) => e.toJson()).toList());
       return await _prefs.setString(_categoriesKey, categoriesJson);

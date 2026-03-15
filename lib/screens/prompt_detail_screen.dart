@@ -413,6 +413,7 @@ class PromptDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ],
           ),
         ),
       ),

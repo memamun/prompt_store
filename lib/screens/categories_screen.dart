@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
+import '../theme/app_colors.dart';
 import '../widgets/category_card.dart';
 import 'category_screen.dart';
 import 'create_category_screen.dart';
