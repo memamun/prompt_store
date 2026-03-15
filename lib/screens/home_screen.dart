@@ -29,7 +29,8 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: SafeArea(
+      body: Builder(
+        builder: (context) => SafeArea(
         child: CustomScrollView(
           slivers: [
             // Modern Header
@@ -38,6 +39,16 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                 child: Row(
                   children: [
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        icon: Icon(
+                          Icons.menu,
+                          color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +177,7 @@ class HomeScreen extends StatelessWidget {
             // Featured Carousel
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 160,
+                height: 180,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 20),

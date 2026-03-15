@@ -218,6 +218,7 @@ class FeaturedCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 260,
+        height: 180,
         decoration: BoxDecoration(
           color: isDark ? AppColors.surfaceContainerDark : AppColors.surfaceContainerLight,
           borderRadius: BorderRadius.circular(20),
@@ -234,7 +235,7 @@ class FeaturedCard extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,27 +271,31 @@ class FeaturedCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    prompt.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                  Flexible(
+                    child: Text(
+                      prompt.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    prompt.description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                  Flexible(
+                    child: Text(
+                      prompt.description,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.mutedDark : AppColors.mutedLight,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 12),
+                  const Spacer(),
                   Row(
                     children: [
                       Icon(

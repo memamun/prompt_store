@@ -18,6 +18,7 @@ class PromptBuilderModal extends StatefulWidget {
 
 class _PromptBuilderModalState extends State<PromptBuilderModal> {
   String _selectedTemplate = '';
+  String _selectedCategory = 'tasks';
   final Map<String, TextEditingController> _variableControllers = {};
   String _generatedPrompt = '';
 
@@ -25,6 +26,7 @@ class _PromptBuilderModalState extends State<PromptBuilderModal> {
     {
       'name': 'Email Writer',
       'icon': Icons.email,
+      'category': 'tasks',
       'variables': [
         {'key': 'purpose', 'label': 'Purpose', 'placeholder': 'e.g., Request a meeting'},
         {'key': 'tone', 'label': 'Tone', 'placeholder': 'e.g., Professional, Friendly'},
@@ -33,6 +35,92 @@ class _PromptBuilderModalState extends State<PromptBuilderModal> {
         {'key': 'cta', 'label': 'Call to Action', 'placeholder': 'e.g., Please reply by Friday'},
       ],
       'template': 'Write a {tone} email for the following purpose:\n\nPurpose: {purpose}\n\nTarget audience: {audience}\n\nKey points to include:\n{key_points}\n\nCall to action: {cta}\n\nPlease generate a professional email that is clear, concise, and effective.',
+    },
+    {
+      'name': 'Code Generator',
+      'icon': Icons.code,
+      'category': 'coding',
+      'variables': [
+        {'key': 'language', 'label': 'Language', 'placeholder': 'e.g., Python, JavaScript'},
+        {'key': 'task', 'label': 'Task', 'placeholder': 'e.g., Create a login function'},
+        {'key': 'requirements', 'label': 'Requirements', 'placeholder': 'e.g., Input validation, Error handling'},
+        {'key': 'complexity', 'label': 'Complexity', 'placeholder': 'e.g., Basic, Advanced'},
+      ],
+      'template': 'Generate {language} code for the following task:\n\nTask: {task}\n\nRequirements:\n- {requirements}\n\nComplexity level: {complexity}\n\nPlease provide well-commented, production-ready code with proper error handling.',
+    },
+    {
+      'name': 'Blog Post',
+      'icon': Icons.article,
+      'category': 'writing',
+      'variables': [
+        {'key': 'topic', 'label': 'Topic', 'placeholder': 'e.g., Benefits of meditation'},
+        {'key': 'keywords', 'label': 'Keywords', 'placeholder': 'e.g., meditation, mindfulness, health'},
+        {'key': 'word_count', 'label': 'Word Count', 'placeholder': 'e.g., 1000'},
+        {'key': 'tone', 'label': 'Tone', 'placeholder': 'e.g., Informative, Casual'},
+      ],
+      'template': 'Write a blog post about:\n\nTopic: {topic}\n\nTarget keywords: {keywords}\n\nWord count: {word_count} words\n\nTone: {tone}\n\nInclude an engaging introduction, well-structured body paragraphs, and a compelling conclusion.',
+    },
+    {
+      'name': 'Image Prompt',
+      'icon': Icons.image,
+      'category': 'images',
+      'variables': [
+        {'key': 'subject', 'label': 'Subject', 'placeholder': 'e.g., A serene mountain landscape'},
+        {'key': 'style', 'label': 'Style', 'placeholder': 'e.g., Photorealistic, Oil painting'},
+        {'key': 'lighting', 'label': 'Lighting', 'placeholder': 'e.g., Golden hour, Studio'},
+        {'key': 'mood', 'label': 'Mood', 'placeholder': 'e.g., Peaceful, Dramatic'},
+        {'key': 'details', 'label': 'Additional Details', 'placeholder': 'e.g., With birds in sky'},
+      ],
+      'template': 'Create an image generation prompt for:\n\nSubject: {subject}\n\nStyle: {style}\n\nLighting: {lighting}\n\nMood: {mood}\n\nAdditional details: {details}\n\nUse high quality, 8k resolution, detailed features, and professional composition.',
+    },
+    {
+      'name': 'Video Script',
+      'icon': Icons.videocam,
+      'category': 'videos',
+      'variables': [
+        {'key': 'topic', 'label': 'Topic', 'placeholder': 'e.g., How to cook pasta'},
+        {'key': 'duration', 'label': 'Duration', 'placeholder': 'e.g., 10 minutes'},
+        {'key': 'tone', 'label': 'Tone', 'placeholder': 'e.g., Educational, Fun'},
+        {'key': 'audience', 'label': 'Target Audience', 'placeholder': 'e.g., Beginners'},
+      ],
+      'template': 'Create a video script for:\n\nTopic: {topic}\n\nDuration: {duration}\n\nTone: {tone}\n\nTarget audience: {audience}\n\nInclude:\n- Hook (first 10 seconds)\n- Main content sections\n- Key points\n- Call to action\n- End screen suggestions',
+    },
+    {
+      'name': 'Social Media',
+      'icon': Icons.share,
+      'category': 'marketing',
+      'variables': [
+        {'key': 'platform', 'label': 'Platform', 'placeholder': 'e.g., Instagram, Twitter'},
+        {'key': 'content_type', 'label': 'Content Type', 'placeholder': 'e.g., Post, Story, Reel'},
+        {'key': 'topic', 'label': 'Topic', 'placeholder': 'e.g., New product launch'},
+        {'key': 'hashtags', 'label': 'Hashtags', 'placeholder': 'e.g., #startup #tech'},
+        {'key': 'cta', 'label': 'Call to Action', 'placeholder': 'e.g., Link in bio'},
+      ],
+      'template': 'Create a {platform} {content_type} about:\n\nTopic: {topic}\n\nInclude:\n- Catchy headline\n- Engaging content\n- Relevant hashtags: {hashtags}\n- Call to action: {cta}',
+    },
+    {
+      'name': 'Data Analysis',
+      'icon': Icons.analytics,
+      'category': 'data',
+      'variables': [
+        {'key': 'data_type', 'label': 'Data Type', 'placeholder': 'e.g., Sales data'},
+        {'key': 'goal', 'label': 'Analysis Goal', 'placeholder': 'e.g., Find trends'},
+        {'key': 'variables', 'label': 'Variables', 'placeholder': 'e.g., Revenue, Date'},
+        {'key': 'format', 'label': 'Output Format', 'placeholder': 'e.g., Tables, Charts'},
+      ],
+      'template': 'Perform data analysis on:\n\nData Type: {data_type}\n\nGoal: {goal}\n\nVariables to analyze: {variables}\n\nOutput format: {format}\n\nPlease provide insights, patterns, and recommendations.',
+    },
+    {
+      'name': 'Quiz Generator',
+      'icon': Icons.quiz,
+      'category': 'education',
+      'variables': [
+        {'key': 'topic', 'label': 'Topic', 'placeholder': 'e.g., World History'},
+        {'key': 'num_questions', 'label': 'Number of Questions', 'placeholder': 'e.g., 10'},
+        {'key': 'difficulty', 'label': 'Difficulty', 'placeholder': 'e.g., Easy, Medium, Hard'},
+        {'key': 'format', 'label': 'Format', 'placeholder': 'e.g., MCQ, True/False'},
+      ],
+      'template': 'Generate a quiz on:\n\nTopic: {topic}\n\nNumber of questions: {num_questions}\n\nDifficulty: {difficulty}\n\nFormat: {format}\n\nInclude correct answers and explanations.',
     },
     {
       'name': 'Code Generator',
@@ -135,6 +223,7 @@ class _PromptBuilderModalState extends State<PromptBuilderModal> {
   void _selectTemplate(Map<String, dynamic> template) {
     setState(() {
       _selectedTemplate = template['name'];
+      _selectedCategory = template['category'] ?? 'tasks';
       _variableControllers.clear();
       for (var variable in template['variables']) {
         _variableControllers[variable['key']] = TextEditingController();
@@ -294,6 +383,42 @@ class _PromptBuilderModalState extends State<PromptBuilderModal> {
                   ),
 
                   if (_selectedTemplate.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+
+                    // Category Selector
+                    Text(
+                      'Category',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<String>(
+                      value: _selectedCategory,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.category),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'tasks', child: Text('Tasks')),
+                        DropdownMenuItem(value: 'images', child: Text('Images')),
+                        DropdownMenuItem(value: 'videos', child: Text('Videos')),
+                        DropdownMenuItem(value: 'writing', child: Text('Writing')),
+                        DropdownMenuItem(value: 'coding', child: Text('Coding')),
+                        DropdownMenuItem(value: 'education', child: Text('Education')),
+                        DropdownMenuItem(value: 'music', child: Text('Music')),
+                        DropdownMenuItem(value: 'data', child: Text('Data')),
+                        DropdownMenuItem(value: 'marketing', child: Text('Marketing')),
+                        DropdownMenuItem(value: 'research', child: Text('Research')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        }
+                      },
+                    ),
                     const SizedBox(height: 24),
 
                     // Variables
