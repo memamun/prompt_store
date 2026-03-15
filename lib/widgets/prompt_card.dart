@@ -343,7 +343,6 @@ class FeaturedCard extends StatelessWidget {
     );
   }
 }
-}
 
 class CategoryCard extends StatelessWidget {
   final String id;
