@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/category.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
 import '../widgets/prompt_card.dart';
@@ -16,22 +17,14 @@ class CategoryScreen extends StatelessWidget {
     required this.categoryName,
   });
 
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'tasks':
-        return AppColors.tasksColor;
-      case 'images':
-        return AppColors.imagesColor;
-      case 'videos':
-        return AppColors.videosColor;
-      case 'writing':
-        return AppColors.writingColor;
-      case 'coding':
-        return AppColors.codingColor;
-      case 'education':
-        return AppColors.educationColor;
-      default:
-        return AppColors.primary;
+  Color _getCategoryColor(String categoryId) {
+    try {
+      final category = CategoryData.defaultCategories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
     }
   }
 

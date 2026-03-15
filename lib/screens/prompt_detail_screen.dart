@@ -7,28 +7,21 @@ import '../models/prompt.dart';
 import '../providers/app_state.dart';
 import '../theme/app_colors.dart';
 import 'edit_prompt_screen.dart';
+import 'prompt_builder_modal.dart';
 
 class PromptDetailScreen extends StatelessWidget {
   final Prompt prompt;
 
   const PromptDetailScreen({super.key, required this.prompt});
 
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'tasks':
-        return AppColors.tasksColor;
-      case 'images':
-        return AppColors.imagesColor;
-      case 'videos':
-        return AppColors.videosColor;
-      case 'writing':
-        return AppColors.writingColor;
-      case 'coding':
-        return AppColors.codingColor;
-      case 'education':
-        return AppColors.educationColor;
-      default:
-        return AppColors.primary;
+  Color _getCategoryColor(String categoryId, AppState appState) {
+    try {
+      final category = appState.categories.firstWhere(
+        (c) => c.id == categoryId,
+      );
+      return category.color;
+    } catch (e) {
+      return AppColors.primary;
     }
   }
 
@@ -36,7 +29,7 @@ class PromptDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final isFavorite = appState.isFavorite(prompt.id);
-    final categoryColor = _getCategoryColor(prompt.category);
+    final categoryColor = _getCategoryColor(prompt.category, appState);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -344,54 +337,82 @@ class PromptDetailScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
+              // Prompt Builder Button
+              SizedBox(
+                width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    final shareText = '${prompt.title}\n\n${prompt.description}\n\n---\n\n${prompt.content}\n\n---\n\nShared from Prompt Store App';
-                    Share.share(shareText, subject: prompt.title);
-                  },
-                  icon: const Icon(Icons.share),
-                  label: const Text('Share'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 2,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: prompt.content));
-                    HapticFeedback.lightImpact();
-                    appState.incrementUsageCount(prompt.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            const Icon(Icons.check_circle, color: Colors.white),
-                            const SizedBox(width: 8),
-                            const Text('Copied to clipboard!'),
-                          ],
-                        ),
-                        backgroundColor: AppColors.success,
-                        duration: const Duration(seconds: 2),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => PromptBuilderModal(
+                        initialContent: prompt.content,
                       ),
                     );
                   },
-                  icon: const Icon(Icons.copy),
-                  label: const Text('Copy Prompt'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  icon: const Icon(Icons.auto_awesome),
+                  label: const Text('Use Prompt Builder'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppColors.primary),
                   ),
                 ),
               ),
-            ],
+              const SizedBox(height: 12),
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        final shareText = '${prompt.title}\n\n${prompt.description}\n\n---\n\n${prompt.content}\n\n---\n\nShared from Prompt Store App';
+                        Share.share(shareText, subject: prompt.title);
+                      },
+                      icon: const Icon(Icons.share),
+                      label: const Text('Share'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: prompt.content));
+                        HapticFeedback.lightImpact();
+                        appState.incrementUsageCount(prompt.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Row(
+                              children: [
+                                const Icon(Icons.check_circle, color: Colors.white),
+                                const SizedBox(width: 8),
+                                const Text('Copied to clipboard!'),
+                              ],
+                            ),
+                            backgroundColor: AppColors.success,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.copy),
+                      label: const Text('Copy Prompt'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ),
         ),
       ),

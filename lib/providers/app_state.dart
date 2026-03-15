@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import '../models/prompt.dart';
+import '../models/prompt.dart' hide Category;
+import '../models/category.dart';
 import '../services/storage_service.dart';
 
 class AppState extends ChangeNotifier {
   final StorageService _storageService;
   List<Prompt> _prompts = [];
+  List<Category> _categories = CategoryData.defaultCategories;
   Set<String> _favorites = {};
   String _searchQuery = '';
   String _selectedCategory = 'all';
+  String _searchFilter = 'all'; // all, my, favorites
   bool _isDarkMode = false;
   bool _isLoading = true;
 
@@ -18,9 +21,11 @@ class AppState extends ChangeNotifier {
 
   // Getters
   List<Prompt> get prompts => _prompts;
+  List<Category> get categories => _categories;
   Set<String> get favorites => _favorites;
   String get searchQuery => _searchQuery;
   String get selectedCategory => _selectedCategory;
+  String get searchFilter => _searchFilter;
   bool get isDarkMode => _isDarkMode;
   bool get isLoading => _isLoading;
 
@@ -29,6 +34,12 @@ class AppState extends ChangeNotifier {
     _isDarkMode = _storageService.getIsDarkMode();
     _favorites = _storageService.getFavorites();
     
+    // Load categories
+    final storedCategories = _storageService.getCategories();
+    if (storedCategories.isNotEmpty) {
+      _categories = storedCategories;
+    }
+
     final storedPrompts = _storageService.getPrompts();
     if (storedPrompts.isEmpty) {
       _prompts = _getSamplePrompts();
@@ -40,18 +51,25 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Filtered prompts
+  // Filtered prompts based on search and filters
   List<Prompt> get filteredPrompts {
     return _prompts.where((prompt) {
+      // Search query filter
       final matchesSearch = _searchQuery.isEmpty ||
           prompt.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           prompt.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           prompt.tags.any((tag) => tag.toLowerCase().contains(_searchQuery.toLowerCase()));
       
+      // Category filter
       final matchesCategory = _selectedCategory == 'all' ||
           prompt.category == _selectedCategory;
       
-      return matchesSearch && matchesCategory;
+      // Search filter (all, my prompts, favorites)
+      final matchesFilter = _searchFilter == 'all' ||
+          (_searchFilter == 'my' && prompt.author == 'You') ||
+          (_searchFilter == 'favorites' && _favorites.contains(prompt.id));
+      
+      return matchesSearch && matchesCategory && matchesFilter;
     }).toList();
   }
 
@@ -63,9 +81,18 @@ class AppState extends ChangeNotifier {
     return _prompts.take(5).toList();
   }
 
+  List<Prompt> get userPrompts {
+    return _prompts.where((p) => p.author == 'You' || p.isCustom == true).toList();
+  }
+
   // Search
   void setSearchQuery(String query) {
     _searchQuery = query;
+    notifyListeners();
+  }
+
+  void setSearchFilter(String filter) {
+    _searchFilter = filter;
     notifyListeners();
   }
 
@@ -97,7 +124,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // CRUD Operations
+  // CRUD Operations for Prompts
   Future<bool> addPrompt({
     required String title,
     required String description,
@@ -121,6 +148,7 @@ class AppState extends ChangeNotifier {
       tags: tags ?? [],
       imageUrl: imageUrl,
       outputPreview: outputPreview,
+      isCustom: true,
     );
     _prompts.insert(0, prompt);
     final success = await _storageService.savePrompts(_prompts);
@@ -180,61 +208,59 @@ class AppState extends ChangeNotifier {
   }
 
   // Get prompts by category
-  List<Prompt> getPromptsByCategory(String category) {
-    return _prompts.where((p) => p.category == category).toList();
+  List<Prompt> getPromptsByCategory(String categoryId) {
+    return _prompts.where((p) => p.category == categoryId).toList();
   }
 
-  // Get category info
-  List<Category> get categories => [
-    Category(
-      id: 'tasks',
-      name: 'Tasks',
-      description: 'Productivity and task prompts',
-      icon: '📋',
-      color: '#0A7EA4',
-      imageUrl: 'https://picsum.photos/seed/tasks/400/300',
-    ),
-    Category(
-      id: 'images',
-      name: 'Images',
-      description: 'Image generation prompts',
-      icon: '🖼️',
-      color: '#8B5CF6',
-      imageUrl: 'https://picsum.photos/seed/images/400/300',
-    ),
-    Category(
-      id: 'videos',
-      name: 'Videos',
-      description: 'Video creation prompts',
-      icon: '🎬',
-      color: '#F59E0B',
-      imageUrl: 'https://picsum.photos/seed/videos/400/300',
-    ),
-    Category(
-      id: 'writing',
-      name: 'Writing',
-      description: 'Content writing prompts',
-      icon: '✍️',
-      color: '#22C55E',
-      imageUrl: 'https://picsum.photos/seed/writing/400/300',
-    ),
-    Category(
-      id: 'coding',
-      name: 'Coding',
-      description: 'Programming prompts',
-      icon: '💻',
-      color: '#EF4444',
-      imageUrl: 'https://picsum.photos/seed/coding/400/300',
-    ),
-    Category(
-      id: 'education',
-      name: 'Education',
-      description: 'Learning prompts',
-      icon: '📚',
-      color: '#06B6D4',
-      imageUrl: 'https://picsum.photos/seed/education/400/300',
-    ),
-  ];
+  // CRUD Operations for Categories
+  Future<bool> addCategory({
+    required String name,
+    required String iconName,
+    required String colorHex,
+  }) async {
+    final category = Category(
+      id: const Uuid().v4(),
+      name: name,
+      iconName: iconName,
+      colorHex: colorHex,
+      isCustom: true,
+      order: _categories.length,
+    );
+    _categories.add(category);
+    final success = await _storageService.saveCategories(_categories);
+    notifyListeners();
+    return success;
+  }
+
+  Future<bool> updateCategory({
+    required String id,
+    required String name,
+    required String iconName,
+    required String colorHex,
+  }) async {
+    final index = _categories.indexWhere((c) => c.id == id);
+    if (index != -1) {
+      _categories[index] = _categories[index].copyWith(
+        name: name,
+        iconName: iconName,
+        colorHex: colorHex,
+      );
+      final success = await _storageService.saveCategories(_categories);
+      notifyListeners();
+      return success;
+    }
+    return false;
+  }
+
+  Future<bool> deleteCategory(String id) async {
+    final category = _categories.firstWhere((c) => c.id == id);
+    if (category.isDefault) return false; // Can't delete default categories
+    
+    _categories.removeWhere((c) => c.id == id);
+    final success = await _storageService.saveCategories(_categories);
+    notifyListeners();
+    return success;
+  }
 
   List<Prompt> _getSamplePrompts() {
     final now = DateTime.now();
@@ -263,7 +289,6 @@ Body:
         updatedAt: now,
         usageCount: 1250,
         tags: ['email', 'business', 'professional'],
-        imageUrl: 'https://picsum.photos/seed/email/600/400',
         outputPreview: 'Subject: Meeting Request\n\nDear [Name],\n\nI hope this email finds you well...',
       ),
       Prompt(
@@ -285,7 +310,6 @@ Use high quality, 8k resolution, detailed features.''',
         updatedAt: now.subtract(const Duration(days: 5)),
         usageCount: 980,
         tags: ['portrait', 'midjourney', 'AI art'],
-        imageUrl: 'https://picsum.photos/seed/portrait/600/400',
         outputPreview: '[Generated portrait image with detailed features]',
       ),
       Prompt(
@@ -311,16 +335,6 @@ Target audience: [YOUR AUDIENCE]''',
         updatedAt: now.subtract(const Duration(days: 10)),
         usageCount: 756,
         tags: ['youtube', 'script', 'video'],
-        imageUrl: 'https://picsum.photos/seed/youtube/600/400',
-        outputPreview: '''Hook: "Hey everyone! Today we're going to..."
-
-Main Points:
-1. Introduction
-2. Key Concept 1
-3. Key Concept 2
-4. Conclusion
-
-CTA: "Like and subscribe for more!"''',
       ),
       Prompt(
         id: '4',
@@ -346,8 +360,6 @@ Include SEO-optimized content with naturally integrated keywords.''',
         updatedAt: now.subtract(const Duration(days: 15)),
         usageCount: 654,
         tags: ['blog', 'SEO', 'writing'],
-        imageUrl: 'https://picsum.photos/seed/blog/600/400',
-        outputPreview: '# Your Blog Title\n\nIntroduction paragraph...',
       ),
       Prompt(
         id: '5',
@@ -371,8 +383,6 @@ Provide a detailed analysis with specific suggestions for improvement.''',
         updatedAt: now.subtract(const Duration(days: 20)),
         usageCount: 432,
         tags: ['code review', 'programming', 'development'],
-        imageUrl: 'https://picsum.photos/seed/codereview/600/400',
-        outputPreview: '''Code Review Summary:\n\n✅ Strengths:\n- Good naming conventions\n- Proper error handling\n\n⚠️ Improvements:\n- Line 15: Consider using...''',
       ),
       Prompt(
         id: '6',
@@ -396,14 +406,6 @@ Include:
         updatedAt: now.subtract(const Duration(days: 25)),
         usageCount: 521,
         tags: ['quiz', 'education', 'learning'],
-        imageUrl: 'https://picsum.photos/seed/quiz/600/400',
-        outputPreview: '''Q1. What is the capital of France?
-A) London
-B) Paris ✓
-C) Berlin
-D) Madrid
-
-Explanation: Paris is the capital city of France.''',
       ),
       Prompt(
         id: '7',
@@ -427,8 +429,6 @@ Include:
         updatedAt: now.subtract(const Duration(days: 30)),
         usageCount: 887,
         tags: ['landscape', 'stable diffusion', 'art'],
-        imageUrl: 'https://picsum.photos/seed/landscape/600/400',
-        outputPreview: '[Generated landscape with mountains at sunset]',
       ),
       Prompt(
         id: '8',
@@ -450,8 +450,6 @@ Provide:
         updatedAt: now.subtract(const Duration(days: 35)),
         usageCount: 445,
         tags: ['meeting', 'summary', 'productivity'],
-        imageUrl: 'https://picsum.photos/seed/meeting/600/400',
-        outputPreview: '''Meeting Summary - [Date]\n\n📌 Key Points:\n- Project timeline discussed\n- Budget approved\n\n✅ Decisions:\n- Launch date: March 15\n\n📝 Action Items:\n- John: Prepare marketing materials (Due: Feb 20)''',
       ),
       Prompt(
         id: '9',
@@ -474,8 +472,6 @@ Include:
         updatedAt: now.subtract(const Duration(days: 40)),
         usageCount: 678,
         tags: ['social media', 'caption', 'marketing'],
-        imageUrl: 'https://picsum.photos/seed/social/600/400',
-        outputPreview: '''🔥 Transform Your Workflow Today!\n\nStop wasting time on repetitive tasks... Learn more in bio!\n\n#Productivity #Growth #Success #Motivation #Entrepreneur #Business #Tips #Learn #GrowthHacking #SuccessMindset''',
       ),
       Prompt(
         id: '10',
@@ -499,8 +495,6 @@ Include:
         updatedAt: now.subtract(const Duration(days: 45)),
         usageCount: 334,
         tags: ['tutorial', 'video', 'education'],
-        imageUrl: 'https://picsum.photos/seed/tutorial/600/400',
-        outputPreview: '''Tutorial: [Topic Name]\nDuration: 10 minutes\n\n0:00 - Introduction\n1:30 - Getting Started\n4:00 - Main Content\n8:00 - Practice Exercise\n9:30 - Summary & Next Steps''',
       ),
     ];
   }

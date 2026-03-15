@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prompt.dart';
+import '../models/category.dart';
 
 class StorageService {
   static const String _promptsKey = 'prompts';
   static const String _favoritesKey = 'favorites';
   static const String _isDarkModeKey = 'isDarkMode';
+  static const String _categoriesKey = 'categories';
 
   final SharedPreferences _prefs;
 
@@ -95,6 +97,30 @@ class StorageService {
 
   Future<bool> setIsDarkMode(bool isDarkMode) async {
     return await _prefs.setBool(_isDarkModeKey, isDarkMode);
+  }
+
+  // Categories
+  List<Category> getCategories() {
+    final String? categoriesJson = _prefs.getString(_categoriesKey);
+    if (categoriesJson == null || categoriesJson.isEmpty) {
+      return [];
+    }
+    try {
+      final List<dynamic> categoriesList = jsonDecode(categoriesJson);
+      return categoriesList.map((e) => Category.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<bool> saveCategories(List<Category> categories) async {
+    try {
+      final String categoriesJson = jsonEncode(categories.map((e) => e.toJson()).toList());
+      return await _prefs.setString(_categoriesKey, categoriesJson);
+    } catch (e) {
+      debugPrint('Error saving categories: $e');
+      return false;
+    }
   }
 
   // Clear all data

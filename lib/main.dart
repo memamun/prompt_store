@@ -4,9 +4,12 @@ import 'services/storage_service.dart';
 import 'theme/app_theme.dart';
 import 'providers/app_state.dart';
 import 'screens/home_screen.dart';
+import 'screens/categories_screen.dart';
+import 'screens/my_prompts_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/create_prompt_screen.dart';
+import 'screens/drawer_menu.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,55 +64,34 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    const CategoriesScreen(),
+    const MyPromptsScreen(),
     const FavoritesScreen(),
     const SettingsScreen(),
   ];
 
+  void _onItemSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    Navigator.pop(context); // Close drawer
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<AppState>();
-    final favoritesCount = appState.favorites.length;
-
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: AppDrawer(
+        currentIndex: _currentIndex,
+        onItemSelected: _onItemSelected,
+      ),
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: favoritesCount > 0,
-              label: Text('$favoritesCount'),
-              child: const Icon(Icons.favorite_outline),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: favoritesCount > 0,
-              label: Text('$favoritesCount'),
-              child: const Icon(Icons.favorite),
-            ),
-            label: 'Favorites',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -121,7 +103,6 @@ class _MainNavigationState extends State<MainNavigation> {
         icon: const Icon(Icons.add),
         label: const Text('Add Prompt'),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

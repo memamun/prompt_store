@@ -60,30 +60,6 @@ class AppTheme {
         borderRadius: BorderRadius.circular(18),
       ),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: AppColors.surfaceContainerLight,
-      indicatorColor: AppColors.primary.withOpacity(0.2),
-      labelTextStyle: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          );
-        }
-        return TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: AppColors.mutedLight,
-        );
-      }),
-      iconTheme: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return const IconThemeData(color: AppColors.primary, size: 24);
-        }
-        return IconThemeData(color: AppColors.mutedLight, size: 24);
-      }),
-    ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
@@ -92,7 +68,7 @@ class AppTheme {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: AppColors.surfaceContainerLight,
-      selectedColor: AppColors.primary.withOpacity(0.2),
+      selectedColor: AppColors.primary.withValues(alpha: 0.2),
       labelStyle: const TextStyle(fontSize: 14),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       shape: RoundedRectangleBorder(
@@ -159,30 +135,6 @@ class AppTheme {
         borderRadius: BorderRadius.circular(18),
       ),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: AppColors.surfaceContainerDark,
-      indicatorColor: AppColors.primary.withOpacity(0.2),
-      labelTextStyle: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          );
-        }
-        return TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: AppColors.mutedDark,
-        );
-      }),
-      iconTheme: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return const IconThemeData(color: AppColors.primary, size: 24);
-        }
-        return IconThemeData(color: AppColors.mutedDark, size: 24);
-      }),
-    ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
@@ -191,7 +143,7 @@ class AppTheme {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: AppColors.surfaceContainerDark,
-      selectedColor: AppColors.primary.withOpacity(0.2),
+      selectedColor: AppColors.primary.withValues(alpha: 0.2),
       labelStyle: const TextStyle(fontSize: 14),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       shape: RoundedRectangleBorder(

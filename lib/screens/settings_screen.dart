@@ -76,7 +76,13 @@ class SettingsScreen extends StatelessWidget {
               trailing: Switch(
                 value: appState.isDarkMode,
                 onChanged: (_) => appState.toggleDarkMode(),
-                activeColor: AppColors.primary,
+                activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
+                thumbColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return AppColors.primary;
+                  }
+                  return null;
+                }),
               ),
             ),
           ),

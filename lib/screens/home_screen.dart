@@ -5,8 +5,8 @@ import '../theme/app_colors.dart';
 import '../widgets/prompt_card.dart';
 import 'search_screen.dart';
 import 'prompt_detail_screen.dart';
-import 'create_prompt_screen.dart';
 import 'category_screen.dart';
+import 'drawer_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,65 +16,71 @@ class HomeScreen extends StatelessWidget {
     final appState = context.watch<AppState>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Find navigation state from parent
+    final scaffoldState = context.findAncestorStateOfType<State>();
+    final mainNavState = context.findAncestorStateOfType<dynamic>();
+    final hasDrawer = Scaffold.maybeOf(context)?.hasDrawer ?? false;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // App Bar
+          // Modern App Bar
           SliverAppBar(
             floating: true,
             pinned: true,
-            expandedHeight: 120,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.primary,
-                      AppColors.primary.withOpacity(0.8),
-                    ],
-                  ),
-                ),
+            expandedHeight: 100,
+            backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+            leading: IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
               ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
               title: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [AppColors.primary, AppColors.primaryDark],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Center(
                       child: Text(
                         'PS',
                         style: TextStyle(
-                          color: AppColors.primary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  const Text(
+                  const SizedBox(width: 8),
+                  Text(
                     'Prompt Store',
                     style: TextStyle(
+                      color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 18,
                     ),
                   ),
                 ],
               ),
-              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              titlePadding: const EdgeInsets.only(left: 0, bottom: 16),
+              centerTitle: false,
             ),
             actions: [
               IconButton(
                 onPressed: () => appState.toggleDarkMode(),
                 icon: Icon(
                   appState.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                  color: Colors.white,
+                  color: isDark ? AppColors.foregroundDark : AppColors.foregroundLight,
                 ),
               ),
             ],
@@ -209,11 +215,7 @@ class HomeScreen extends StatelessWidget {
                 (context, index) {
                   final category = appState.categories[index];
                   return CategoryCard(
-                    id: category.id,
-                    name: category.name,
-                    icon: category.icon,
-                    color: category.color,
-                    imageUrl: category.imageUrl,
+                    category: category,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -286,20 +288,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // Bottom padding
+          // Bottom padding for FAB
           const SliverToBoxAdapter(
-            child: SizedBox(height: 100),
+            child: SizedBox(height: 80),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CreatePromptScreen()),
-          );
-        },
-        child: const Icon(Icons.add, size: 32),
       ),
     );
   }

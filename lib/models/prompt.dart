@@ -12,6 +12,7 @@ class Prompt {
   List<String> tags;
   String? imageUrl;
   String? outputPreview;
+  bool isCustom;
 
   Prompt({
     required this.id,
@@ -27,6 +28,7 @@ class Prompt {
     this.tags = const [],
     this.imageUrl,
     this.outputPreview,
+    this.isCustom = false,
   });
 
   factory Prompt.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class Prompt {
       tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? [],
       imageUrl: json['imageUrl'] as String?,
       outputPreview: json['outputPreview'] as String?,
+      isCustom: json['isCustom'] as bool? ?? false,
     );
   }
 
@@ -62,6 +65,7 @@ class Prompt {
       'tags': tags,
       'imageUrl': imageUrl,
       'outputPreview': outputPreview,
+      'isCustom': isCustom,
     };
   }
 
@@ -79,6 +83,7 @@ class Prompt {
     List<String>? tags,
     String? imageUrl,
     String? outputPreview,
+    bool? isCustom,
   }) {
     return Prompt(
       id: id ?? this.id,
@@ -93,6 +98,10 @@ class Prompt {
       isFavorite: isFavorite ?? this.isFavorite,
       tags: tags ?? this.tags,
       imageUrl: imageUrl ?? this.imageUrl,
+      outputPreview: outputPreview ?? this.outputPreview,
+      isCustom: isCustom ?? this.isCustom,
+    );
+  }
       outputPreview: outputPreview ?? this.outputPreview,
     );
   }
